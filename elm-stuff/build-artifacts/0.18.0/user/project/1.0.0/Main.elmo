@@ -1,0 +1,1368 @@
+var _user$project$Main$booksInStock = function (books) {
+	return A2(
+		_elm_lang$html$Html$div,
+		{ctor: '[]'},
+		{
+			ctor: '::',
+			_0: _elm_lang$html$Html$text(
+				A2(
+					_elm_lang$core$Basics_ops['++'],
+					'Number of unique books in stock: ',
+					_elm_lang$core$Basics$toString(
+						_elm_lang$core$List$length(books)))),
+			_1: {ctor: '[]'}
+		});
+};
+var _user$project$Main$encodeBook = function (book) {
+	return _elm_lang$core$Json_Encode$object(
+		{
+			ctor: '::',
+			_0: {
+				ctor: '_Tuple2',
+				_0: 'isbn',
+				_1: _elm_lang$core$Json_Encode$string(book.isbn)
+			},
+			_1: {
+				ctor: '::',
+				_0: {
+					ctor: '_Tuple2',
+					_0: 'name',
+					_1: _elm_lang$core$Json_Encode$string(book.name)
+				},
+				_1: {
+					ctor: '::',
+					_0: {
+						ctor: '_Tuple2',
+						_0: 'author',
+						_1: _elm_lang$core$Json_Encode$string(book.author)
+					},
+					_1: {
+						ctor: '::',
+						_0: {
+							ctor: '_Tuple2',
+							_0: 'publisher',
+							_1: _elm_lang$core$Json_Encode$string(book.publisher)
+						},
+						_1: {
+							ctor: '::',
+							_0: {
+								ctor: '_Tuple2',
+								_0: 'year',
+								_1: _elm_lang$core$Json_Encode$string(book.year)
+							},
+							_1: {
+								ctor: '::',
+								_0: {
+									ctor: '_Tuple2',
+									_0: 'genre',
+									_1: _elm_lang$core$Json_Encode$string(book.genre)
+								},
+								_1: {
+									ctor: '::',
+									_0: {
+										ctor: '_Tuple2',
+										_0: 'edition',
+										_1: _elm_lang$core$Json_Encode$string(book.edition)
+									},
+									_1: {
+										ctor: '::',
+										_0: {
+											ctor: '_Tuple2',
+											_0: 'inventory',
+											_1: _elm_lang$core$Json_Encode$string(book.inventory)
+										},
+										_1: {ctor: '[]'}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		});
+};
+var _user$project$Main$encodeModel = function (model) {
+	return _elm_lang$core$Json_Encode$object(
+		{
+			ctor: '::',
+			_0: {
+				ctor: '_Tuple2',
+				_0: 'editing',
+				_1: _user$project$Main$encodeBook(model.editing)
+			},
+			_1: {
+				ctor: '::',
+				_0: {
+					ctor: '_Tuple2',
+					_0: 'books',
+					_1: _elm_lang$core$Json_Encode$list(
+						A2(_elm_lang$core$List$map, _user$project$Main$encodeBook, model.books))
+				},
+				_1: {ctor: '[]'}
+			}
+		});
+};
+var _user$project$Main$stringValidation = function (string) {
+	var _p0 = A2(_elm_lang$core$String$any, _elm_lang$core$Char$isDigit, string) ? {ctor: '_Tuple2', _0: 'red', _1: 'Only Letters'} : {ctor: '_Tuple2', _0: 'green', _1: 'OK'};
+	var color = _p0._0;
+	var message = _p0._1;
+	return A2(
+		_elm_lang$html$Html$span,
+		{
+			ctor: '::',
+			_0: _elm_lang$html$Html_Attributes$style(
+				{
+					ctor: '::',
+					_0: {ctor: '_Tuple2', _0: 'color', _1: color},
+					_1: {ctor: '[]'}
+				}),
+			_1: {ctor: '[]'}
+		},
+		{
+			ctor: '::',
+			_0: _elm_lang$html$Html$text(message),
+			_1: {ctor: '[]'}
+		});
+};
+var _user$project$Main$digitValidation = function (digit) {
+	var _p1 = A2(_elm_lang$core$String$all, _elm_lang$core$Char$isDigit, digit) ? {ctor: '_Tuple2', _0: 'green', _1: 'OK'} : {ctor: '_Tuple2', _0: 'red', _1: 'Only Digits'};
+	var color = _p1._0;
+	var message = _p1._1;
+	return A2(
+		_elm_lang$html$Html$span,
+		{
+			ctor: '::',
+			_0: _elm_lang$html$Html_Attributes$style(
+				{
+					ctor: '::',
+					_0: {ctor: '_Tuple2', _0: 'color', _1: color},
+					_1: {ctor: '[]'}
+				}),
+			_1: {ctor: '[]'}
+		},
+		{
+			ctor: '::',
+			_0: _elm_lang$html$Html$text(message),
+			_1: {ctor: '[]'}
+		});
+};
+var _user$project$Main$dropDuplicates = F2(
+	function (book, books) {
+		return {
+			ctor: '::',
+			_0: book,
+			_1: _elm_lang$core$Tuple$second(
+				A2(
+					_elm_lang$core$List$partition,
+					function (x) {
+						return A2(_elm_lang$core$String$contains, x.isbn, book.isbn) && A2(_elm_lang$core$String$contains, book.isbn, x.isbn);
+					},
+					books))
+		};
+	});
+var _user$project$Main$deleteBook = F2(
+	function (model, isbn) {
+		return _elm_lang$core$Tuple$second(
+			A2(
+				_elm_lang$core$List$partition,
+				function (x) {
+					return A2(_elm_lang$core$String$contains, x.isbn, isbn) && A2(_elm_lang$core$String$contains, isbn, x.isbn);
+				},
+				model.books));
+	});
+var _user$project$Main$validateButton = function (book) {
+	return (_elm_lang$core$String$isEmpty(book.isbn) || (_elm_lang$core$String$isEmpty(book.name) || (_elm_lang$core$String$isEmpty(book.author) || (_elm_lang$core$String$isEmpty(book.publisher) || (_elm_lang$core$String$isEmpty(book.year) || (_elm_lang$core$String$isEmpty(book.genre) || (_elm_lang$core$String$isEmpty(book.edition) || (_elm_lang$core$String$isEmpty(book.inventory) || ((!A2(_elm_lang$core$String$all, _elm_lang$core$Char$isDigit, book.isbn)) || (A2(_elm_lang$core$String$any, _elm_lang$core$Char$isDigit, book.name) || (A2(_elm_lang$core$String$any, _elm_lang$core$Char$isDigit, book.author) || (A2(_elm_lang$core$String$any, _elm_lang$core$Char$isDigit, book.publisher) || ((!A2(_elm_lang$core$String$all, _elm_lang$core$Char$isDigit, book.year)) || (A2(_elm_lang$core$String$any, _elm_lang$core$Char$isDigit, book.genre) || (A2(_elm_lang$core$String$any, _elm_lang$core$Char$isDigit, book.edition) || (!A2(_elm_lang$core$String$all, _elm_lang$core$Char$isDigit, book.inventory))))))))))))))))) ? true : false;
+};
+var _user$project$Main$subscriptions = function (model) {
+	return _elm_lang$core$Platform_Sub$batch(
+		{ctor: '[]'});
+};
+var _user$project$Main$init = function (cacheModel) {
+	var model = cacheModel.cacheModel;
+	return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+};
+var _user$project$Main$updateCache = _elm_lang$core$Native_Platform.outgoingPort(
+	'updateCache',
+	function (v) {
+		return v;
+	});
+var _user$project$Main$Model = F2(
+	function (a, b) {
+		return {books: a, editing: b};
+	});
+var _user$project$Main$Book = F8(
+	function (a, b, c, d, e, f, g, h) {
+		return {isbn: a, name: b, author: c, publisher: d, year: e, genre: f, edition: g, inventory: h};
+	});
+var _user$project$Main$emptyBook = A8(_user$project$Main$Book, '', '', '', '', '', '', '', '');
+var _user$project$Main$emptyModel = A2(
+	_user$project$Main$Model,
+	{ctor: '[]'},
+	_user$project$Main$emptyBook);
+var _user$project$Main$editExistingBook = F2(
+	function (model, isbn) {
+		return A2(
+			_elm_lang$core$Maybe$withDefault,
+			_user$project$Main$emptyBook,
+			_elm_lang$core$List$head(
+				A2(
+					_elm_lang$core$List$filter,
+					function (book) {
+						return !_elm_lang$core$Native_Utils.eq(book.isbn, isbn);
+					},
+					model.books)));
+	});
+var _user$project$Main$update = F2(
+	function (msg, model) {
+		var books = model.books;
+		var book = model.editing;
+		var _p2 = msg;
+		switch (_p2.ctor) {
+			case 'AddEditing':
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{
+							books: A2(_user$project$Main$dropDuplicates, book, books)
+						}),
+					_1: _user$project$Main$updateCache(
+						_user$project$Main$encodeModel(model))
+				};
+			case 'ISBN':
+				return {
+					ctor: '_Tuple2',
+					_0: A2(
+						_user$project$Main$Model,
+						books,
+						_elm_lang$core$Native_Utils.update(
+							book,
+							{isbn: _p2._0})),
+					_1: _user$project$Main$updateCache(
+						_user$project$Main$encodeModel(model))
+				};
+			case 'Name':
+				return {
+					ctor: '_Tuple2',
+					_0: A2(
+						_user$project$Main$Model,
+						books,
+						_elm_lang$core$Native_Utils.update(
+							book,
+							{name: _p2._0})),
+					_1: _user$project$Main$updateCache(
+						_user$project$Main$encodeModel(model))
+				};
+			case 'Author':
+				return {
+					ctor: '_Tuple2',
+					_0: A2(
+						_user$project$Main$Model,
+						books,
+						_elm_lang$core$Native_Utils.update(
+							book,
+							{author: _p2._0})),
+					_1: _user$project$Main$updateCache(
+						_user$project$Main$encodeModel(model))
+				};
+			case 'Publisher':
+				return {
+					ctor: '_Tuple2',
+					_0: A2(
+						_user$project$Main$Model,
+						books,
+						_elm_lang$core$Native_Utils.update(
+							book,
+							{publisher: _p2._0})),
+					_1: _user$project$Main$updateCache(
+						_user$project$Main$encodeModel(model))
+				};
+			case 'Year':
+				return {
+					ctor: '_Tuple2',
+					_0: A2(
+						_user$project$Main$Model,
+						books,
+						_elm_lang$core$Native_Utils.update(
+							book,
+							{year: _p2._0})),
+					_1: _user$project$Main$updateCache(
+						_user$project$Main$encodeModel(model))
+				};
+			case 'Genre':
+				return {
+					ctor: '_Tuple2',
+					_0: A2(
+						_user$project$Main$Model,
+						books,
+						_elm_lang$core$Native_Utils.update(
+							book,
+							{genre: _p2._0})),
+					_1: _user$project$Main$updateCache(
+						_user$project$Main$encodeModel(model))
+				};
+			case 'Edition':
+				return {
+					ctor: '_Tuple2',
+					_0: A2(
+						_user$project$Main$Model,
+						books,
+						_elm_lang$core$Native_Utils.update(
+							book,
+							{edition: _p2._0})),
+					_1: _user$project$Main$updateCache(
+						_user$project$Main$encodeModel(model))
+				};
+			case 'Inventory':
+				return {
+					ctor: '_Tuple2',
+					_0: A2(
+						_user$project$Main$Model,
+						books,
+						_elm_lang$core$Native_Utils.update(
+							book,
+							{inventory: _p2._0})),
+					_1: _user$project$Main$updateCache(
+						_user$project$Main$encodeModel(model))
+				};
+			case 'DeleteBook':
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{
+							books: A2(_user$project$Main$deleteBook, model, _p2._0)
+						}),
+					_1: _user$project$Main$updateCache(
+						_user$project$Main$encodeModel(model))
+				};
+			default:
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{
+							editing: A2(_user$project$Main$editExistingBook, model, _p2._0)
+						}),
+					_1: _user$project$Main$updateCache(
+						_user$project$Main$encodeModel(model))
+				};
+		}
+	});
+var _user$project$Main$decodeBook = A2(
+	_elm_community$json_extra$Json_Decode_Extra_ops['|:'],
+	A2(
+		_elm_community$json_extra$Json_Decode_Extra_ops['|:'],
+		A2(
+			_elm_community$json_extra$Json_Decode_Extra_ops['|:'],
+			A2(
+				_elm_community$json_extra$Json_Decode_Extra_ops['|:'],
+				A2(
+					_elm_community$json_extra$Json_Decode_Extra_ops['|:'],
+					A2(
+						_elm_community$json_extra$Json_Decode_Extra_ops['|:'],
+						A2(
+							_elm_community$json_extra$Json_Decode_Extra_ops['|:'],
+							A2(
+								_elm_community$json_extra$Json_Decode_Extra_ops['|:'],
+								_elm_lang$core$Json_Decode$succeed(_user$project$Main$Book),
+								A2(_elm_lang$core$Json_Decode$field, 'isbn', _elm_lang$core$Json_Decode$string)),
+							A2(_elm_lang$core$Json_Decode$field, 'name', _elm_lang$core$Json_Decode$string)),
+						A2(_elm_lang$core$Json_Decode$field, 'author', _elm_lang$core$Json_Decode$string)),
+					A2(_elm_lang$core$Json_Decode$field, 'publisher', _elm_lang$core$Json_Decode$string)),
+				A2(_elm_lang$core$Json_Decode$field, 'year', _elm_lang$core$Json_Decode$string)),
+			A2(_elm_lang$core$Json_Decode$field, 'genre', _elm_lang$core$Json_Decode$string)),
+		A2(_elm_lang$core$Json_Decode$field, 'edition', _elm_lang$core$Json_Decode$string)),
+	A2(_elm_lang$core$Json_Decode$field, 'inventory', _elm_lang$core$Json_Decode$string));
+var _user$project$Main$decodeModel = A2(
+	_elm_community$json_extra$Json_Decode_Extra_ops['|:'],
+	A2(
+		_elm_community$json_extra$Json_Decode_Extra_ops['|:'],
+		_elm_lang$core$Json_Decode$succeed(_user$project$Main$Model),
+		A2(
+			_elm_lang$core$Json_Decode$field,
+			'books',
+			_elm_lang$core$Json_Decode$list(_user$project$Main$decodeBook))),
+	A2(_elm_lang$core$Json_Decode$field, 'editing', _user$project$Main$decodeBook));
+var _user$project$Main$CacheModel = function (a) {
+	return {cacheModel: a};
+};
+var _user$project$Main$decodeCacheModel = A2(
+	_elm_community$json_extra$Json_Decode_Extra_ops['|:'],
+	_elm_lang$core$Json_Decode$succeed(_user$project$Main$CacheModel),
+	A2(_elm_lang$core$Json_Decode$field, 'cacheModel', _user$project$Main$decodeModel));
+var _user$project$Main$EditBook = function (a) {
+	return {ctor: 'EditBook', _0: a};
+};
+var _user$project$Main$DeleteBook = function (a) {
+	return {ctor: 'DeleteBook', _0: a};
+};
+var _user$project$Main$bookToBookInfo = function (book) {
+	return A2(
+		_elm_lang$html$Html$div,
+		{
+			ctor: '::',
+			_0: _elm_lang$html$Html_Attributes$style(
+				{
+					ctor: '::',
+					_0: {ctor: '_Tuple2', _0: 'border', _1: 'black solid 1px'},
+					_1: {
+						ctor: '::',
+						_0: {ctor: '_Tuple2', _0: 'padding', _1: '10px'},
+						_1: {ctor: '[]'}
+					}
+				}),
+			_1: {ctor: '[]'}
+		},
+		{
+			ctor: '::',
+			_0: A2(
+				_elm_lang$html$Html$dt,
+				{ctor: '[]'},
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html$text('ISBN'),
+					_1: {ctor: '[]'}
+				}),
+			_1: {
+				ctor: '::',
+				_0: A2(
+					_elm_lang$html$Html$dd,
+					{ctor: '[]'},
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html$text(book.isbn),
+						_1: {ctor: '[]'}
+					}),
+				_1: {
+					ctor: '::',
+					_0: A2(
+						_elm_lang$html$Html$dt,
+						{ctor: '[]'},
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html$text('Name'),
+							_1: {ctor: '[]'}
+						}),
+					_1: {
+						ctor: '::',
+						_0: A2(
+							_elm_lang$html$Html$dd,
+							{ctor: '[]'},
+							{
+								ctor: '::',
+								_0: _elm_lang$html$Html$text(book.name),
+								_1: {ctor: '[]'}
+							}),
+						_1: {
+							ctor: '::',
+							_0: A2(
+								_elm_lang$html$Html$dt,
+								{ctor: '[]'},
+								{
+									ctor: '::',
+									_0: _elm_lang$html$Html$text('Author'),
+									_1: {ctor: '[]'}
+								}),
+							_1: {
+								ctor: '::',
+								_0: A2(
+									_elm_lang$html$Html$dd,
+									{ctor: '[]'},
+									{
+										ctor: '::',
+										_0: _elm_lang$html$Html$text(book.author),
+										_1: {ctor: '[]'}
+									}),
+								_1: {
+									ctor: '::',
+									_0: A2(
+										_elm_lang$html$Html$dt,
+										{ctor: '[]'},
+										{
+											ctor: '::',
+											_0: _elm_lang$html$Html$text('Publisher'),
+											_1: {ctor: '[]'}
+										}),
+									_1: {
+										ctor: '::',
+										_0: A2(
+											_elm_lang$html$Html$dd,
+											{ctor: '[]'},
+											{
+												ctor: '::',
+												_0: _elm_lang$html$Html$text(book.publisher),
+												_1: {ctor: '[]'}
+											}),
+										_1: {
+											ctor: '::',
+											_0: A2(
+												_elm_lang$html$Html$dt,
+												{ctor: '[]'},
+												{
+													ctor: '::',
+													_0: _elm_lang$html$Html$text('Year'),
+													_1: {ctor: '[]'}
+												}),
+											_1: {
+												ctor: '::',
+												_0: A2(
+													_elm_lang$html$Html$dd,
+													{ctor: '[]'},
+													{
+														ctor: '::',
+														_0: _elm_lang$html$Html$text(book.year),
+														_1: {ctor: '[]'}
+													}),
+												_1: {
+													ctor: '::',
+													_0: A2(
+														_elm_lang$html$Html$dt,
+														{ctor: '[]'},
+														{
+															ctor: '::',
+															_0: _elm_lang$html$Html$text('Genre'),
+															_1: {ctor: '[]'}
+														}),
+													_1: {
+														ctor: '::',
+														_0: A2(
+															_elm_lang$html$Html$dd,
+															{ctor: '[]'},
+															{
+																ctor: '::',
+																_0: _elm_lang$html$Html$text(book.genre),
+																_1: {ctor: '[]'}
+															}),
+														_1: {
+															ctor: '::',
+															_0: A2(
+																_elm_lang$html$Html$dt,
+																{ctor: '[]'},
+																{
+																	ctor: '::',
+																	_0: _elm_lang$html$Html$text('Edition'),
+																	_1: {ctor: '[]'}
+																}),
+															_1: {
+																ctor: '::',
+																_0: A2(
+																	_elm_lang$html$Html$dd,
+																	{ctor: '[]'},
+																	{
+																		ctor: '::',
+																		_0: _elm_lang$html$Html$text(book.edition),
+																		_1: {ctor: '[]'}
+																	}),
+																_1: {
+																	ctor: '::',
+																	_0: A2(
+																		_elm_lang$html$Html$dt,
+																		{ctor: '[]'},
+																		{
+																			ctor: '::',
+																			_0: _elm_lang$html$Html$text('Inventory'),
+																			_1: {ctor: '[]'}
+																		}),
+																	_1: {
+																		ctor: '::',
+																		_0: A2(
+																			_elm_lang$html$Html$dd,
+																			{ctor: '[]'},
+																			{
+																				ctor: '::',
+																				_0: _elm_lang$html$Html$text(book.inventory),
+																				_1: {ctor: '[]'}
+																			}),
+																		_1: {
+																			ctor: '::',
+																			_0: A2(
+																				_elm_lang$html$Html$button,
+																				{
+																					ctor: '::',
+																					_0: _elm_lang$html$Html_Events$onClick(
+																						_user$project$Main$DeleteBook(book.isbn)),
+																					_1: {ctor: '[]'}
+																				},
+																				{
+																					ctor: '::',
+																					_0: _elm_lang$html$Html$text('Delete'),
+																					_1: {ctor: '[]'}
+																				}),
+																			_1: {
+																				ctor: '::',
+																				_0: A2(
+																					_elm_lang$html$Html$button,
+																					{
+																						ctor: '::',
+																						_0: _elm_lang$html$Html_Events$onClick(
+																							_user$project$Main$EditBook(book.isbn)),
+																						_1: {ctor: '[]'}
+																					},
+																					{
+																						ctor: '::',
+																						_0: _elm_lang$html$Html$text('Edit'),
+																						_1: {ctor: '[]'}
+																					}),
+																				_1: {ctor: '[]'}
+																			}
+																		}
+																	}
+																}
+															}
+														}
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		});
+};
+var _user$project$Main$booksToBook = function (book) {
+	return A2(
+		_elm_lang$html$Html$div,
+		{ctor: '[]'},
+		A2(_elm_lang$core$List$map, _user$project$Main$bookToBookInfo, book));
+};
+var _user$project$Main$bookList = function (books) {
+	return _user$project$Main$booksToBook(books);
+};
+var _user$project$Main$AddEditing = {ctor: 'AddEditing'};
+var _user$project$Main$Inventory = function (a) {
+	return {ctor: 'Inventory', _0: a};
+};
+var _user$project$Main$Edition = function (a) {
+	return {ctor: 'Edition', _0: a};
+};
+var _user$project$Main$Genre = function (a) {
+	return {ctor: 'Genre', _0: a};
+};
+var _user$project$Main$Year = function (a) {
+	return {ctor: 'Year', _0: a};
+};
+var _user$project$Main$Publisher = function (a) {
+	return {ctor: 'Publisher', _0: a};
+};
+var _user$project$Main$Author = function (a) {
+	return {ctor: 'Author', _0: a};
+};
+var _user$project$Main$Name = function (a) {
+	return {ctor: 'Name', _0: a};
+};
+var _user$project$Main$ISBN = function (a) {
+	return {ctor: 'ISBN', _0: a};
+};
+var _user$project$Main$editBook = function (book) {
+	return A2(
+		_elm_lang$html$Html$div,
+		{
+			ctor: '::',
+			_0: _elm_lang$html$Html_Attributes$style(
+				{ctor: '[]'}),
+			_1: {ctor: '[]'}
+		},
+		{
+			ctor: '::',
+			_0: A2(
+				_elm_lang$html$Html$div,
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html_Attributes$style(
+						{
+							ctor: '::',
+							_0: {ctor: '_Tuple2', _0: 'padding', _1: '10px'},
+							_1: {ctor: '[]'}
+						}),
+					_1: {ctor: '[]'}
+				},
+				{
+					ctor: '::',
+					_0: A2(
+						_elm_lang$html$Html$label,
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html_Attributes$for('ISBN'),
+							_1: {
+								ctor: '::',
+								_0: _elm_lang$html$Html_Attributes$style(
+									{
+										ctor: '::',
+										_0: {ctor: '_Tuple2', _0: 'display', _1: 'block'},
+										_1: {ctor: '[]'}
+									}),
+								_1: {ctor: '[]'}
+							}
+						},
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html$text('ISBN'),
+							_1: {ctor: '[]'}
+						}),
+					_1: {
+						ctor: '::',
+						_0: A2(
+							_elm_lang$html$Html$input,
+							{
+								ctor: '::',
+								_0: _elm_lang$html$Html_Attributes$id('ISBN'),
+								_1: {
+									ctor: '::',
+									_0: _elm_lang$html$Html_Attributes$type_('text'),
+									_1: {
+										ctor: '::',
+										_0: _elm_lang$html$Html_Attributes$placeholder('ISBN'),
+										_1: {
+											ctor: '::',
+											_0: _elm_lang$html$Html_Events$onInput(_user$project$Main$ISBN),
+											_1: {
+												ctor: '::',
+												_0: _elm_lang$html$Html_Attributes$value(book.isbn),
+												_1: {ctor: '[]'}
+											}
+										}
+									}
+								}
+							},
+							{ctor: '[]'}),
+						_1: {
+							ctor: '::',
+							_0: _user$project$Main$digitValidation(book.isbn),
+							_1: {ctor: '[]'}
+						}
+					}
+				}),
+			_1: {
+				ctor: '::',
+				_0: A2(
+					_elm_lang$html$Html$div,
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html_Attributes$style(
+							{
+								ctor: '::',
+								_0: {ctor: '_Tuple2', _0: 'padding', _1: '10px'},
+								_1: {ctor: '[]'}
+							}),
+						_1: {ctor: '[]'}
+					},
+					{
+						ctor: '::',
+						_0: A2(
+							_elm_lang$html$Html$label,
+							{
+								ctor: '::',
+								_0: _elm_lang$html$Html_Attributes$for('Name'),
+								_1: {
+									ctor: '::',
+									_0: _elm_lang$html$Html_Attributes$style(
+										{
+											ctor: '::',
+											_0: {ctor: '_Tuple2', _0: 'display', _1: 'block'},
+											_1: {ctor: '[]'}
+										}),
+									_1: {ctor: '[]'}
+								}
+							},
+							{
+								ctor: '::',
+								_0: _elm_lang$html$Html$text('Name'),
+								_1: {ctor: '[]'}
+							}),
+						_1: {
+							ctor: '::',
+							_0: A2(
+								_elm_lang$html$Html$input,
+								{
+									ctor: '::',
+									_0: _elm_lang$html$Html_Attributes$type_('text'),
+									_1: {
+										ctor: '::',
+										_0: _elm_lang$html$Html_Attributes$placeholder('Name'),
+										_1: {
+											ctor: '::',
+											_0: _elm_lang$html$Html_Events$onInput(_user$project$Main$Name),
+											_1: {
+												ctor: '::',
+												_0: _elm_lang$html$Html_Attributes$value(book.name),
+												_1: {ctor: '[]'}
+											}
+										}
+									}
+								},
+								{ctor: '[]'}),
+							_1: {
+								ctor: '::',
+								_0: _user$project$Main$stringValidation(book.name),
+								_1: {ctor: '[]'}
+							}
+						}
+					}),
+				_1: {
+					ctor: '::',
+					_0: A2(
+						_elm_lang$html$Html$div,
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html_Attributes$style(
+								{
+									ctor: '::',
+									_0: {ctor: '_Tuple2', _0: 'padding', _1: '10px'},
+									_1: {ctor: '[]'}
+								}),
+							_1: {ctor: '[]'}
+						},
+						{
+							ctor: '::',
+							_0: A2(
+								_elm_lang$html$Html$label,
+								{
+									ctor: '::',
+									_0: _elm_lang$html$Html_Attributes$for('Author'),
+									_1: {
+										ctor: '::',
+										_0: _elm_lang$html$Html_Attributes$style(
+											{
+												ctor: '::',
+												_0: {ctor: '_Tuple2', _0: 'display', _1: 'block'},
+												_1: {ctor: '[]'}
+											}),
+										_1: {ctor: '[]'}
+									}
+								},
+								{
+									ctor: '::',
+									_0: _elm_lang$html$Html$text('Author'),
+									_1: {ctor: '[]'}
+								}),
+							_1: {
+								ctor: '::',
+								_0: A2(
+									_elm_lang$html$Html$input,
+									{
+										ctor: '::',
+										_0: _elm_lang$html$Html_Attributes$type_('text'),
+										_1: {
+											ctor: '::',
+											_0: _elm_lang$html$Html_Attributes$placeholder('Author'),
+											_1: {
+												ctor: '::',
+												_0: _elm_lang$html$Html_Events$onInput(_user$project$Main$Author),
+												_1: {
+													ctor: '::',
+													_0: _elm_lang$html$Html_Attributes$value(book.author),
+													_1: {ctor: '[]'}
+												}
+											}
+										}
+									},
+									{ctor: '[]'}),
+								_1: {
+									ctor: '::',
+									_0: _user$project$Main$stringValidation(book.author),
+									_1: {ctor: '[]'}
+								}
+							}
+						}),
+					_1: {
+						ctor: '::',
+						_0: A2(
+							_elm_lang$html$Html$div,
+							{
+								ctor: '::',
+								_0: _elm_lang$html$Html_Attributes$style(
+									{
+										ctor: '::',
+										_0: {ctor: '_Tuple2', _0: 'padding', _1: '10px'},
+										_1: {ctor: '[]'}
+									}),
+								_1: {ctor: '[]'}
+							},
+							{
+								ctor: '::',
+								_0: A2(
+									_elm_lang$html$Html$label,
+									{
+										ctor: '::',
+										_0: _elm_lang$html$Html_Attributes$for('Publisher'),
+										_1: {
+											ctor: '::',
+											_0: _elm_lang$html$Html_Attributes$style(
+												{
+													ctor: '::',
+													_0: {ctor: '_Tuple2', _0: 'display', _1: 'block'},
+													_1: {ctor: '[]'}
+												}),
+											_1: {ctor: '[]'}
+										}
+									},
+									{
+										ctor: '::',
+										_0: _elm_lang$html$Html$text('Publisher'),
+										_1: {ctor: '[]'}
+									}),
+								_1: {
+									ctor: '::',
+									_0: A2(
+										_elm_lang$html$Html$input,
+										{
+											ctor: '::',
+											_0: _elm_lang$html$Html_Attributes$type_('text'),
+											_1: {
+												ctor: '::',
+												_0: _elm_lang$html$Html_Attributes$placeholder('Publisher'),
+												_1: {
+													ctor: '::',
+													_0: _elm_lang$html$Html_Events$onInput(_user$project$Main$Publisher),
+													_1: {
+														ctor: '::',
+														_0: _elm_lang$html$Html_Attributes$value(book.publisher),
+														_1: {ctor: '[]'}
+													}
+												}
+											}
+										},
+										{ctor: '[]'}),
+									_1: {
+										ctor: '::',
+										_0: _user$project$Main$stringValidation(book.publisher),
+										_1: {ctor: '[]'}
+									}
+								}
+							}),
+						_1: {
+							ctor: '::',
+							_0: A2(
+								_elm_lang$html$Html$div,
+								{
+									ctor: '::',
+									_0: _elm_lang$html$Html_Attributes$style(
+										{
+											ctor: '::',
+											_0: {ctor: '_Tuple2', _0: 'padding', _1: '10px'},
+											_1: {ctor: '[]'}
+										}),
+									_1: {ctor: '[]'}
+								},
+								{
+									ctor: '::',
+									_0: A2(
+										_elm_lang$html$Html$label,
+										{
+											ctor: '::',
+											_0: _elm_lang$html$Html_Attributes$for('Year'),
+											_1: {
+												ctor: '::',
+												_0: _elm_lang$html$Html_Attributes$style(
+													{
+														ctor: '::',
+														_0: {ctor: '_Tuple2', _0: 'display', _1: 'block'},
+														_1: {ctor: '[]'}
+													}),
+												_1: {ctor: '[]'}
+											}
+										},
+										{
+											ctor: '::',
+											_0: _elm_lang$html$Html$text('Year'),
+											_1: {ctor: '[]'}
+										}),
+									_1: {
+										ctor: '::',
+										_0: A2(
+											_elm_lang$html$Html$input,
+											{
+												ctor: '::',
+												_0: _elm_lang$html$Html_Attributes$type_('text'),
+												_1: {
+													ctor: '::',
+													_0: _elm_lang$html$Html_Attributes$placeholder('Year'),
+													_1: {
+														ctor: '::',
+														_0: _elm_lang$html$Html_Events$onInput(_user$project$Main$Year),
+														_1: {
+															ctor: '::',
+															_0: _elm_lang$html$Html_Attributes$value(book.year),
+															_1: {ctor: '[]'}
+														}
+													}
+												}
+											},
+											{ctor: '[]'}),
+										_1: {
+											ctor: '::',
+											_0: _user$project$Main$digitValidation(book.year),
+											_1: {ctor: '[]'}
+										}
+									}
+								}),
+							_1: {
+								ctor: '::',
+								_0: A2(
+									_elm_lang$html$Html$div,
+									{
+										ctor: '::',
+										_0: _elm_lang$html$Html_Attributes$style(
+											{
+												ctor: '::',
+												_0: {ctor: '_Tuple2', _0: 'padding', _1: '10px'},
+												_1: {ctor: '[]'}
+											}),
+										_1: {ctor: '[]'}
+									},
+									{
+										ctor: '::',
+										_0: A2(
+											_elm_lang$html$Html$label,
+											{
+												ctor: '::',
+												_0: _elm_lang$html$Html_Attributes$for('Genre'),
+												_1: {
+													ctor: '::',
+													_0: _elm_lang$html$Html_Attributes$style(
+														{
+															ctor: '::',
+															_0: {ctor: '_Tuple2', _0: 'display', _1: 'block'},
+															_1: {ctor: '[]'}
+														}),
+													_1: {ctor: '[]'}
+												}
+											},
+											{
+												ctor: '::',
+												_0: _elm_lang$html$Html$text('Genre'),
+												_1: {ctor: '[]'}
+											}),
+										_1: {
+											ctor: '::',
+											_0: A2(
+												_elm_lang$html$Html$input,
+												{
+													ctor: '::',
+													_0: _elm_lang$html$Html_Attributes$type_('text'),
+													_1: {
+														ctor: '::',
+														_0: _elm_lang$html$Html_Attributes$placeholder('Genre'),
+														_1: {
+															ctor: '::',
+															_0: _elm_lang$html$Html_Events$onInput(_user$project$Main$Genre),
+															_1: {
+																ctor: '::',
+																_0: _elm_lang$html$Html_Attributes$value(book.genre),
+																_1: {ctor: '[]'}
+															}
+														}
+													}
+												},
+												{ctor: '[]'}),
+											_1: {
+												ctor: '::',
+												_0: _user$project$Main$stringValidation(book.genre),
+												_1: {ctor: '[]'}
+											}
+										}
+									}),
+								_1: {
+									ctor: '::',
+									_0: A2(
+										_elm_lang$html$Html$div,
+										{
+											ctor: '::',
+											_0: _elm_lang$html$Html_Attributes$style(
+												{
+													ctor: '::',
+													_0: {ctor: '_Tuple2', _0: 'padding', _1: '10px'},
+													_1: {ctor: '[]'}
+												}),
+											_1: {ctor: '[]'}
+										},
+										{
+											ctor: '::',
+											_0: A2(
+												_elm_lang$html$Html$label,
+												{
+													ctor: '::',
+													_0: _elm_lang$html$Html_Attributes$for('Edition'),
+													_1: {
+														ctor: '::',
+														_0: _elm_lang$html$Html_Attributes$style(
+															{
+																ctor: '::',
+																_0: {ctor: '_Tuple2', _0: 'display', _1: 'block'},
+																_1: {ctor: '[]'}
+															}),
+														_1: {ctor: '[]'}
+													}
+												},
+												{
+													ctor: '::',
+													_0: _elm_lang$html$Html$text('Edition'),
+													_1: {ctor: '[]'}
+												}),
+											_1: {
+												ctor: '::',
+												_0: A2(
+													_elm_lang$html$Html$input,
+													{
+														ctor: '::',
+														_0: _elm_lang$html$Html_Attributes$type_('text'),
+														_1: {
+															ctor: '::',
+															_0: _elm_lang$html$Html_Attributes$placeholder('Edition'),
+															_1: {
+																ctor: '::',
+																_0: _elm_lang$html$Html_Events$onInput(_user$project$Main$Edition),
+																_1: {
+																	ctor: '::',
+																	_0: _elm_lang$html$Html_Attributes$value(book.edition),
+																	_1: {ctor: '[]'}
+																}
+															}
+														}
+													},
+													{ctor: '[]'}),
+												_1: {
+													ctor: '::',
+													_0: _user$project$Main$stringValidation(book.edition),
+													_1: {ctor: '[]'}
+												}
+											}
+										}),
+									_1: {
+										ctor: '::',
+										_0: A2(
+											_elm_lang$html$Html$div,
+											{
+												ctor: '::',
+												_0: _elm_lang$html$Html_Attributes$style(
+													{
+														ctor: '::',
+														_0: {ctor: '_Tuple2', _0: 'padding', _1: '10px'},
+														_1: {ctor: '[]'}
+													}),
+												_1: {ctor: '[]'}
+											},
+											{
+												ctor: '::',
+												_0: A2(
+													_elm_lang$html$Html$label,
+													{
+														ctor: '::',
+														_0: _elm_lang$html$Html_Attributes$for('Inventory'),
+														_1: {
+															ctor: '::',
+															_0: _elm_lang$html$Html_Attributes$style(
+																{
+																	ctor: '::',
+																	_0: {ctor: '_Tuple2', _0: 'display', _1: 'block'},
+																	_1: {ctor: '[]'}
+																}),
+															_1: {ctor: '[]'}
+														}
+													},
+													{
+														ctor: '::',
+														_0: _elm_lang$html$Html$text('Inventory'),
+														_1: {ctor: '[]'}
+													}),
+												_1: {
+													ctor: '::',
+													_0: A2(
+														_elm_lang$html$Html$input,
+														{
+															ctor: '::',
+															_0: _elm_lang$html$Html_Attributes$type_('number'),
+															_1: {
+																ctor: '::',
+																_0: _elm_lang$html$Html_Attributes$placeholder('Inventory'),
+																_1: {
+																	ctor: '::',
+																	_0: _elm_lang$html$Html_Events$onInput(_user$project$Main$Inventory),
+																	_1: {
+																		ctor: '::',
+																		_0: _elm_lang$html$Html_Attributes$value(book.inventory),
+																		_1: {ctor: '[]'}
+																	}
+																}
+															}
+														},
+														{ctor: '[]'}),
+													_1: {
+														ctor: '::',
+														_0: _user$project$Main$digitValidation(book.inventory),
+														_1: {ctor: '[]'}
+													}
+												}
+											}),
+										_1: {ctor: '[]'}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		});
+};
+var _user$project$Main$view = function (model) {
+	return A2(
+		_elm_lang$html$Html$div,
+		{ctor: '[]'},
+		{
+			ctor: '::',
+			_0: _user$project$Main$booksInStock(model.books),
+			_1: {
+				ctor: '::',
+				_0: _user$project$Main$editBook(model.editing),
+				_1: {
+					ctor: '::',
+					_0: A2(
+						_elm_lang$html$Html$button,
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html_Attributes$disabled(
+								_user$project$Main$validateButton(model.editing)),
+							_1: {
+								ctor: '::',
+								_0: _elm_lang$html$Html_Events$onClick(_user$project$Main$AddEditing),
+								_1: {ctor: '[]'}
+							}
+						},
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html$text('add'),
+							_1: {ctor: '[]'}
+						}),
+					_1: {
+						ctor: '::',
+						_0: A2(
+							_elm_lang$html$Html$div,
+							{ctor: '[]'},
+							{
+								ctor: '::',
+								_0: _user$project$Main$bookList(model.books),
+								_1: {ctor: '[]'}
+							}),
+						_1: {ctor: '[]'}
+					}
+				}
+			}
+		});
+};
+var _user$project$Main$main = _elm_lang$html$Html$programWithFlags(
+	{init: _user$project$Main$init, view: _user$project$Main$view, update: _user$project$Main$update, subscriptions: _user$project$Main$subscriptions})(
+	A2(
+		_elm_lang$core$Json_Decode$andThen,
+		function (cacheModel) {
+			return _elm_lang$core$Json_Decode$succeed(
+				{cacheModel: cacheModel});
+		},
+		A2(
+			_elm_lang$core$Json_Decode$field,
+			'cacheModel',
+			A2(
+				_elm_lang$core$Json_Decode$andThen,
+				function (books) {
+					return A2(
+						_elm_lang$core$Json_Decode$andThen,
+						function (editing) {
+							return _elm_lang$core$Json_Decode$succeed(
+								{books: books, editing: editing});
+						},
+						A2(
+							_elm_lang$core$Json_Decode$field,
+							'editing',
+							A2(
+								_elm_lang$core$Json_Decode$andThen,
+								function (author) {
+									return A2(
+										_elm_lang$core$Json_Decode$andThen,
+										function (edition) {
+											return A2(
+												_elm_lang$core$Json_Decode$andThen,
+												function (genre) {
+													return A2(
+														_elm_lang$core$Json_Decode$andThen,
+														function (inventory) {
+															return A2(
+																_elm_lang$core$Json_Decode$andThen,
+																function (isbn) {
+																	return A2(
+																		_elm_lang$core$Json_Decode$andThen,
+																		function (name) {
+																			return A2(
+																				_elm_lang$core$Json_Decode$andThen,
+																				function (publisher) {
+																					return A2(
+																						_elm_lang$core$Json_Decode$andThen,
+																						function (year) {
+																							return _elm_lang$core$Json_Decode$succeed(
+																								{author: author, edition: edition, genre: genre, inventory: inventory, isbn: isbn, name: name, publisher: publisher, year: year});
+																						},
+																						A2(_elm_lang$core$Json_Decode$field, 'year', _elm_lang$core$Json_Decode$string));
+																				},
+																				A2(_elm_lang$core$Json_Decode$field, 'publisher', _elm_lang$core$Json_Decode$string));
+																		},
+																		A2(_elm_lang$core$Json_Decode$field, 'name', _elm_lang$core$Json_Decode$string));
+																},
+																A2(_elm_lang$core$Json_Decode$field, 'isbn', _elm_lang$core$Json_Decode$string));
+														},
+														A2(_elm_lang$core$Json_Decode$field, 'inventory', _elm_lang$core$Json_Decode$string));
+												},
+												A2(_elm_lang$core$Json_Decode$field, 'genre', _elm_lang$core$Json_Decode$string));
+										},
+										A2(_elm_lang$core$Json_Decode$field, 'edition', _elm_lang$core$Json_Decode$string));
+								},
+								A2(_elm_lang$core$Json_Decode$field, 'author', _elm_lang$core$Json_Decode$string))));
+				},
+				A2(
+					_elm_lang$core$Json_Decode$field,
+					'books',
+					_elm_lang$core$Json_Decode$list(
+						A2(
+							_elm_lang$core$Json_Decode$andThen,
+							function (author) {
+								return A2(
+									_elm_lang$core$Json_Decode$andThen,
+									function (edition) {
+										return A2(
+											_elm_lang$core$Json_Decode$andThen,
+											function (genre) {
+												return A2(
+													_elm_lang$core$Json_Decode$andThen,
+													function (inventory) {
+														return A2(
+															_elm_lang$core$Json_Decode$andThen,
+															function (isbn) {
+																return A2(
+																	_elm_lang$core$Json_Decode$andThen,
+																	function (name) {
+																		return A2(
+																			_elm_lang$core$Json_Decode$andThen,
+																			function (publisher) {
+																				return A2(
+																					_elm_lang$core$Json_Decode$andThen,
+																					function (year) {
+																						return _elm_lang$core$Json_Decode$succeed(
+																							{author: author, edition: edition, genre: genre, inventory: inventory, isbn: isbn, name: name, publisher: publisher, year: year});
+																					},
+																					A2(_elm_lang$core$Json_Decode$field, 'year', _elm_lang$core$Json_Decode$string));
+																			},
+																			A2(_elm_lang$core$Json_Decode$field, 'publisher', _elm_lang$core$Json_Decode$string));
+																	},
+																	A2(_elm_lang$core$Json_Decode$field, 'name', _elm_lang$core$Json_Decode$string));
+															},
+															A2(_elm_lang$core$Json_Decode$field, 'isbn', _elm_lang$core$Json_Decode$string));
+													},
+													A2(_elm_lang$core$Json_Decode$field, 'inventory', _elm_lang$core$Json_Decode$string));
+											},
+											A2(_elm_lang$core$Json_Decode$field, 'genre', _elm_lang$core$Json_Decode$string));
+									},
+									A2(_elm_lang$core$Json_Decode$field, 'edition', _elm_lang$core$Json_Decode$string));
+							},
+							A2(_elm_lang$core$Json_Decode$field, 'author', _elm_lang$core$Json_Decode$string))))))));
